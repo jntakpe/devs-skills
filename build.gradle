@@ -79,7 +79,7 @@ dependencies {
 }
 
 noArg {
-    annotation("org.springframework.data.mongodb.core.mapping.Document")
+    annotation("com.github.jntakpe.devsskills.config.NoArg")
 }
 
 asciidoctor {

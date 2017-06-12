@@ -1,8 +1,10 @@
 package com.github.jntakpe.devsskills.model
 
+import com.github.jntakpe.devsskills.config.NoArg
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.Document
 
+@NoArg
 @Document
 data class Employee(val email: String,
                     val firstName: String,
