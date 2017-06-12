@@ -45,6 +45,7 @@ ext {
 }
 
 ext['spring-restdocs.version'] = '1.2.1.RELEASE'
+ext['spring-data-releasetrain'] = 'Kay-M3'
 
 compileKotlin {
 	kotlinOptions.jvmTarget = "1.8"

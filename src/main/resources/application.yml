@@ -1,0 +1,17 @@
+spring:
+  data:
+    mongodb:
+      database: devs_skills
+
+---
+
+spring:
+  profiles: docker
+  data:
+    mongodb:
+      host: mongodb
+
+---
+
+spring:
+  profiles: cloud
