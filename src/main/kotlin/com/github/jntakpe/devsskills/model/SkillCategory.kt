@@ -5,6 +5,7 @@ enum class SkillCategory {
     BACKEND,
     FRONTEND,
     DATABASE,
+    OPS,
     IA,
     LANGUAGE,
     MISC
