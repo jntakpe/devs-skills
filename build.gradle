@@ -1,28 +1,51 @@
 buildscript {
 	ext {
-		kotlinVersion = '1.1.2-4'
+		kotlinVersion = '1.1.2-5'
 		springBootVersion = '2.0.0.M1'
+        jacksonVersion = '2.8.8'
+        reactorVersion = '3.0.7.RELEASE'
+        reactorKotlinVersion = '1.0.0.M2'
+        restAssuredVersion = '3.0.3'
+        asciidoctorVersion = '1.5.3'
+        springRestDocsVersion = '1.2.1.RELEASE'
+        ghPublishVersion = '0.2.1'
 	}
 	repositories {
+        jcenter()
 		mavenCentral()
 		maven { url "https://repo.spring.io/snapshot" }
 		maven { url "https://repo.spring.io/milestone" }
 	}
 	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
-		classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
+        classpath("org.jetbrains.kotlin:kotlin-noarg:${kotlinVersion}")
+        classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
+        classpath("org.jetbrains.kotlin:kotlin-test-junit:${kotlinVersion}")
+        classpath("org.asciidoctor:asciidoctor-gradle-plugin:${asciidoctorVersion}")
+        classpath("org.ajoberstar:gradle-git-publish:${ghPublishVersion}")
 	}
 }
 
 apply plugin: 'kotlin'
+apply plugin: 'kotlin-noarg'
 apply plugin: 'kotlin-spring'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.asciidoctor.convert'
+apply plugin: 'org.ajoberstar.git-publish'
 
+group= 'com.github.jntakpe'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
+
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
+ext['spring-restdocs.version'] = '1.2.1.RELEASE'
+
 compileKotlin {
 	kotlinOptions.jvmTarget = "1.8"
 }
@@ -31,6 +54,7 @@ compileTestKotlin {
 }
 
 repositories {
+    jcenter()
 	mavenCentral()
 	maven { url "https://repo.spring.io/snapshot" }
 	maven { url "https://repo.spring.io/milestone" }
@@ -42,8 +66,48 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-actuator-docs')
 	compile('org.springframework.boot:spring-boot-starter-data-mongodb-reactive')
 	compile('org.springframework.boot:spring-boot-starter-webflux')
+    compile("io.projectreactor:reactor-kotlin-extensions:${reactorKotlinVersion}")
+    compile("com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}")
 	compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlinVersion}")
 	compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
-	testCompile('org.springframework.boot:spring-boot-starter-test')
-	testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('io.projectreactor.addons:reactor-test')
+    testCompile("io.rest-assured:rest-assured:${restAssuredVersion}")
+    testCompile("org.springframework.restdocs:spring-restdocs-restassured:${springRestDocsVersion}")
+}
+
+noArg {
+    annotation("org.springframework.data.mongodb.core.mapping.Document")
+}
+
+asciidoctor {
+    dependsOn test
+    inputs.dir snippetsDir
+    sources {
+        include 'api-guide.adoc'
+    }
+}
+
+asciidoctor.doLast {
+    copy {
+        from "${buildDir}/asciidoc/html5"
+        into "${projectDir}/src/main/resources/static"
+        include 'api-guide.html'
+    }
+}
+
+gitPublish {
+    repoUri = 'git@github.com:jntakpe/devs-skills.git'
+    branch = 'gh-pages'
+    repoDir = file("$buildDir/gitPublish")
+    contents {
+        from(file("${asciidoctor.outputDir}/html5"))
+    }
+    commitMessage = 'Publishing a new API guide'
+}
+
+task publish(type: GradleBuild) {
+    dependsOn asciidoctor
+    tasks = ['gitPublishPush']
 }
