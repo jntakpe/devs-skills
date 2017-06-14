@@ -19,8 +19,8 @@ class EmployeeServiceTest {
 
     @Autowired lateinit var employeeRepository: EmployeeRepository
     @Autowired lateinit var employeeService: EmployeeService
-    val jntakpe = Employee("jntakpe@mail.com", "Jocelyn", "NTAKPE", listOf(Skill(BACKEND, "Java"), Skill(FRONTEND, "Angular")))
-    val cbarillet = Employee("cbarillet@mail.com", "Cyril", "BARILLET", listOf(Skill(OPS, "Docker")))
+    val jntakpe = Employee("jntakpe", "jntakpe@mail.com", "Jocelyn", "NTAKPE", listOf(Skill(BACKEND, "Java"), Skill(FRONTEND, "Angular")))
+    val cbarillet = Employee("cbarillet", "cbarillet@mail.com", "Cyril", "BARILLET", listOf(Skill(OPS, "Docker")))
 
     @Before
     fun setUp() {
@@ -30,12 +30,38 @@ class EmployeeServiceTest {
     }
 
     @Test
+    fun `should find employee by login`() {
+        employeeService.findByLogin(jntakpe.login).test()
+                .expectSubscription()
+                .consumeNextWith {
+                    assertThat(it).isNotNull()
+                    assertThat(it.login).isEqualTo(jntakpe.login)
+                }
+                .verifyComplete()
+    }
+
+    @Test
+    fun `should find employee by login ignoring case`() {
+        employeeService.findByLogin(jntakpe.login.toUpperCase()).test()
+                .expectSubscription()
+                .consumeNextWith { assertThat(it.login).isEqualTo(jntakpe.login) }
+                .verifyComplete()
+    }
+
+    @Test
+    fun `should not find employee because login doesn't exist`() {
+        employeeService.findByLogin("unknown").test()
+                .expectSubscription()
+                .expectNextCount(0L)
+                .verifyComplete()
+    }
+
+    @Test
     fun `should find employee by mail`() {
         employeeService.findByEmail(jntakpe.email).test()
                 .expectSubscription()
                 .consumeNextWith {
                     assertThat(it).isNotNull()
-                    assertThat(it.id).isNotNull()
                     assertThat(it.email).isEqualTo(jntakpe.email)
                 }
                 .verifyComplete()

@@ -11,6 +11,12 @@ class EmployeeService(private val employeeRepository: EmployeeRepository) {
 
     val logger = LoggerFactory.getLogger(javaClass.simpleName)
 
+    fun findByLogin(login: String): Mono<Employee> {
+        logger.debug("Searching employee with login {}", login)
+        return employeeRepository.findByLoginIgnoreCase(login)
+                .doOnNext { logger.debug("{} found using login", it) }
+    }
+
     fun findByEmail(email: String): Mono<Employee> {
         logger.debug("Searching employee with email {}", email)
         return employeeRepository.findByEmailIgnoreCase(email)

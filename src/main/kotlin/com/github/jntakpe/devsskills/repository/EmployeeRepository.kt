@@ -7,6 +7,8 @@ import reactor.core.publisher.Mono
 
 interface EmployeeRepository : ReactiveMongoRepository<Employee, ObjectId> {
 
+    fun findByLoginIgnoreCase(login: String): Mono<Employee>
+
     fun findByEmailIgnoreCase(email: String): Mono<Employee>
 
 }
