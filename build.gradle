@@ -44,6 +44,7 @@ ext {
     snippetsDir = file('build/generated-snippets')
 }
 
+ext['spring.version'] = '5.0.0.RC2'
 ext['spring-restdocs.version'] = '1.2.1.RELEASE'
 ext['spring-data-releasetrain'] = 'Kay-M3'
 
@@ -60,7 +61,6 @@ repositories {
 	maven { url "https://repo.spring.io/snapshot" }
 	maven { url "https://repo.spring.io/milestone" }
 }
-
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-actuator')
