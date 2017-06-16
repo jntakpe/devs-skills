@@ -1,10 +1,12 @@
 package com.github.jntakpe.devsskills.service
 
+import com.github.jntakpe.devsskills.exception.IdNotFoundException
 import com.github.jntakpe.devsskills.model.Employee
 import com.github.jntakpe.devsskills.model.Skill
 import com.github.jntakpe.devsskills.model.SkillCategory.*
 import com.github.jntakpe.devsskills.repository.EmployeeRepository
 import org.assertj.core.api.Assertions.assertThat
+import org.bson.types.ObjectId
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,8 +21,8 @@ class EmployeeServiceTest {
 
     @Autowired lateinit var employeeRepository: EmployeeRepository
     @Autowired lateinit var employeeService: EmployeeService
-    val jntakpe = Employee("jntakpe", "jntakpe@mail.com", "Jocelyn", "NTAKPE", listOf(Skill(BACKEND, "Java"), Skill(FRONTEND, "Angular")))
-    val cbarillet = Employee("cbarillet", "cbarillet@mail.com", "Cyril", "BARILLET", listOf(Skill(OPS, "Docker")))
+    val jntakpe = Employee("jntakpe", "jntakpe@mail.com", "Jocelyn", "NTAKPE", setOf(Skill(BACKEND, "Java"), Skill(FRONTEND, "Angular")))
+    val cbarillet = Employee("cbarillet", "cbarillet@mail.com", "Cyril", "BARILLET", setOf(Skill(OPS, "Docker")))
 
     @Before
     fun setUp() {
@@ -28,6 +30,26 @@ class EmployeeServiceTest {
                 .thenMany(employeeRepository.insert(listOf(jntakpe, cbarillet)))
                 .blockLast()
     }
+
+    @Test
+    fun `should find employee by id`() {
+        employeeService.findById(jntakpe.id!!).test()
+                .expectSubscription()
+                .consumeNextWith {
+                    assertThat(it).isNotNull()
+                    assertThat(it.login).isEqualTo(jntakpe.login)
+                }
+                .verifyComplete()
+    }
+
+    @Test
+    fun `should not find employee because id doesn't exist`() {
+        employeeService.findById(ObjectId()).test()
+                .expectSubscription()
+                .expectNextCount(0L)
+                .verifyComplete()
+    }
+
 
     @Test
     fun `should find employee by login`() {
@@ -81,6 +103,26 @@ class EmployeeServiceTest {
                 .expectSubscription()
                 .expectNextCount(0L)
                 .verifyComplete()
+    }
+
+    @Test
+    fun `should update employee`() {
+        val updated = jntakpe.copy(login = "joss")
+        employeeService.update(updated, jntakpe.id!!).test()
+                .expectSubscription()
+                .consumeNextWith {
+                    assertThat(it.login).isEqualTo(updated.login)
+                    assertThat(employeeRepository.findByLoginIgnoreCase(updated.login).block()).isNotNull()
+                    assertThat(employeeRepository.findByLoginIgnoreCase(jntakpe.login).block()).isNull()
+                }
+                .verifyComplete()
+    }
+
+    @Test
+    fun `should fail to update employee cuz wrong id`() {
+        employeeService.update(jntakpe, ObjectId()).test()
+                .expectSubscription()
+                .verifyError(IdNotFoundException::class.java)
     }
 
 }
