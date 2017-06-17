@@ -2,7 +2,9 @@ language: java
 sudo: required
 jdk:
   - oraclejdk8
-services: mongodb
+services:
+  - mongodb
+  - redis-server
 before_install:
   - chmod +x gradlew
   - ./gradlew clean
