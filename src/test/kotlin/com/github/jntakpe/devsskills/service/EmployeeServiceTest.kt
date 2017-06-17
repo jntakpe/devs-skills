@@ -13,7 +13,9 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit4.SpringRunner
+import reactor.core.publisher.Flux
 import reactor.core.publisher.test
+import java.time.Duration
 
 @SpringBootTest
 @RunWith(SpringRunner::class)
@@ -40,6 +42,16 @@ class EmployeeServiceTest {
                     assertThat(it.login).isEqualTo(jntakpe.login)
                 }
                 .verifyComplete()
+    }
+
+    @Test
+    fun `should find employee by id 100 times below 1 sec`() {
+        val execs = 100
+        val duration = Flux.range(0, execs).flatMap { employeeService.findById(jntakpe.id!!) }.test()
+                .expectSubscription()
+                .expectNextCount(execs.toLong())
+                .verifyComplete()
+        assertThat(duration).isLessThan(Duration.ofSeconds(1))
     }
 
     @Test

@@ -6,8 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories
 
 @SpringBootApplication
+@EnableRedisRepositories
 @EnableReactiveMongoRepositories
 @EnableAutoConfiguration(exclude = arrayOf(MongoAutoConfiguration::class, MongoDataAutoConfiguration::class))
 class DevsSkillsApplication

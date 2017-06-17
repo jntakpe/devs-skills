@@ -1,10 +1,14 @@
 package com.github.jntakpe.devsskills.model
 
 import com.github.jntakpe.devsskills.config.NoArg
+import java.io.Serializable
 import java.math.BigDecimal
 
 @NoArg
-data class Skill(val category: SkillCategory, val name: String, val votes: List<Vote> = emptyList(), val mean: BigDecimal = BigDecimal.ZERO) {
+data class Skill(val category: SkillCategory,
+                 val name: String,
+                 val votes: List<Vote> = emptyList(),
+                 val mean: BigDecimal = BigDecimal.ZERO) : Serializable {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

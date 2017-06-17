@@ -1,0 +1,4 @@
+spring:
+  data:
+    mongodb:
+      database: devs_skills_test
