@@ -12,9 +12,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.test.context.junit4.SpringRunner
 import reactor.core.publisher.Flux
 import reactor.core.publisher.test
+import reactor.core.scheduler.Schedulers
 import java.time.Duration
 
 @SpringBootTest
@@ -23,11 +25,13 @@ class EmployeeServiceTest {
 
     @Autowired lateinit var employeeRepository: EmployeeRepository
     @Autowired lateinit var employeeService: EmployeeService
+    @Autowired lateinit var redisConnectionFactory: RedisConnectionFactory
     val jntakpe = Employee("jntakpe", "jntakpe@mail.com", "Jocelyn", "NTAKPE", setOf(Skill(BACKEND, "Java"), Skill(FRONTEND, "Angular")))
     val cbarillet = Employee("cbarillet", "cbarillet@mail.com", "Cyril", "BARILLET", setOf(Skill(OPS, "Docker")))
 
     @Before
     fun setUp() {
+        redisConnectionFactory.connection.flushDb()
         employeeRepository.deleteAll()
                 .thenMany(employeeRepository.insert(listOf(jntakpe, cbarillet)))
                 .blockLast()
@@ -47,7 +51,9 @@ class EmployeeServiceTest {
     @Test
     fun `should find employee by id 100 times below 1 sec`() {
         val execs = 100
-        val duration = Flux.range(0, execs).flatMap { employeeService.findById(jntakpe.id!!) }.test()
+        val duration = Flux.range(0, execs)
+                .publishOn(Schedulers.elastic())
+                .flatMap { employeeService.findById(jntakpe.id!!) }.test()
                 .expectSubscription()
                 .expectNextCount(execs.toLong())
                 .verifyComplete()

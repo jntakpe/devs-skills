@@ -15,7 +15,7 @@ class CacheService(private val cacheManager: RedisCacheManager) {
     val logger = LoggerFactory.getLogger(javaClass.simpleName)
 
     fun <T : Identifiable> store(value: T, property: KProperty1<T, *>, key: String? = null): T {
-        logger.info("Storing {} in cache", value.toString())
+        logger.info("Storing {} in cache with key {}", value.toString(), key ?: value.id)
         resolveCacheName(value.javaClass, property).putIfAbsent(key ?: value.id.toString(), value)
         return value
     }

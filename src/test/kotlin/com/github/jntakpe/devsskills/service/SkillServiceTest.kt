@@ -10,6 +10,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.test.context.junit4.SpringRunner
 import reactor.core.publisher.test
 
@@ -19,12 +20,14 @@ class SkillServiceTest {
 
     @Autowired lateinit var employeeRepository: EmployeeRepository
     @Autowired lateinit var skillService: SkillService
+    @Autowired lateinit var redisConnectionFactory: RedisConnectionFactory
     val jntakpe = Employee("jntakpe", "jntakpe@mail.com", "Jocelyn", "NTAKPE", setOf(Skill(BACKEND, "Java"), Skill(FRONTEND, "Angular")))
     val cbarillet = Employee("cbarillet", "cbarillet@mail.com", "Cyril", "BARILLET", setOf(Skill(OPS, "Docker")))
     val noskill = Employee("noskill", "noskill@mail.com", "No", "SKILL", emptySet())
 
     @Before
     fun setUp() {
+        redisConnectionFactory.connection.flushDb()
         employeeRepository.deleteAll()
                 .thenMany(employeeRepository.insert(listOf(jntakpe, cbarillet, noskill)))
                 .blockLast()

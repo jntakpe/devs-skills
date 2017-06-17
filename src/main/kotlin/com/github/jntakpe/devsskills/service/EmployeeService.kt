@@ -6,7 +6,6 @@ import com.github.jntakpe.devsskills.repository.EmployeeRepository
 import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
 
@@ -17,8 +16,8 @@ class EmployeeService(private val employeeRepository: EmployeeRepository, privat
 
     fun findById(id: ObjectId): Mono<Employee> {
         logger.debug("Searching employee with id {}", id)
-        return Flux.concat(cacheService.retrieve(id.toString(), Employee::id, Employee::class.java),
-                employeeRepository.findById(id).map { cacheService.store(it, Employee::id) })
+        return cacheService.retrieve(id.toString(), Employee::id, Employee::class.java)
+                .concatWith(employeeRepository.findById(id).doOnNext { cacheService.store(it, Employee::id) })
                 .take(1)
                 .singleOrEmpty()
                 .doOnNext { logger.debug("{} found using id", it) }
