@@ -3,7 +3,6 @@ package com.github.jntakpe.devsskills.model
 import com.github.jntakpe.devsskills.config.NoArg
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.Document
-import java.io.Serializable
 
 @NoArg
 @Document
@@ -12,7 +11,7 @@ data class Employee(val login: String,
                     val firstName: String,
                     val lastName: String,
                     val skills: Set<Skill> = emptySet(),
-                    val id: ObjectId? = null) : Serializable {
+                    override val id: ObjectId? = null) : Identifiable {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

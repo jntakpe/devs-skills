@@ -2,6 +2,10 @@ spring:
   data:
     mongodb:
       database: devs_skills
+redis:
+  caches:
+    - name: employee_id
+      expiry: 1800
 
 ---
 

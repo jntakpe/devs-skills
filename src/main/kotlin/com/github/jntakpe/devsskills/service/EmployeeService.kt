@@ -11,14 +11,14 @@ import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
 
 @Service
-class EmployeeService(private val employeeRepository: EmployeeRepository, private val employeeCacheService: EmployeeCacheService) {
+class EmployeeService(private val employeeRepository: EmployeeRepository, private val cacheService: CacheService) {
 
     val logger = LoggerFactory.getLogger(javaClass.simpleName)
 
     fun findById(id: ObjectId): Mono<Employee> {
         logger.debug("Searching employee with id {}", id)
-        return Flux.concat(employeeCacheService.retrieve(Employee::id.name, id.toString()),
-                employeeRepository.findById(id).map { employeeCacheService.store(it) })
+        return Flux.concat(cacheService.retrieve(id.toString(), Employee::id, Employee::class.java),
+                employeeRepository.findById(id).map { cacheService.store(it, Employee::id) })
                 .take(1)
                 .singleOrEmpty()
                 .doOnNext { logger.debug("{} found using id", it) }
