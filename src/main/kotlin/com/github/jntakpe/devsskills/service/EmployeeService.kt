@@ -16,7 +16,7 @@ class EmployeeService(private val employeeRepository: EmployeeRepository, privat
 
     fun findById(id: ObjectId): Mono<Employee> {
         logger.debug("Searching employee with id {}", id)
-        return cacheService.retrieve(id.toString(), Employee::id, Employee::class.java)
+        return cacheService.retrieve(id.toString(), Employee::class.java, Employee::id)
                 .concatWith(employeeRepository.findById(id).doOnNext { cacheService.store(it, Employee::id) })
                 .take(1)
                 .singleOrEmpty()
@@ -44,6 +44,7 @@ class EmployeeService(private val employeeRepository: EmployeeRepository, privat
     private fun save(employee: Employee): Mono<Employee> {
         logger.info("Saving employee {}", employee)
         return employeeRepository.save(employee)
+                .doOnNext { cacheService.store(it, Employee::id) }
                 .doOnNext { logger.info("{} saved", it) }
     }
 

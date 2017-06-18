@@ -48,7 +48,7 @@ class CacheServiceTest {
     @Test
     fun `should retrieve value from cache`() {
         cacheManager.getCache("employee_id").put(jntakpe.id.toString(), jntakpe)
-        cacheService.retrieve(jntakpe.id.toString(), Employee::id, Employee::class.java).test()
+        cacheService.retrieve(jntakpe.id.toString(), Employee::class.java, Employee::id).test()
                 .expectSubscription()
                 .expectNextCount(1)
                 .verifyComplete()
@@ -56,7 +56,7 @@ class CacheServiceTest {
 
     @Test
     fun `should not retrieve value from cache`() {
-        cacheService.retrieve(jntakpe.id.toString(), Employee::id, Employee::class.java).test()
+        cacheService.retrieve(jntakpe.id.toString(), Employee::class.java, Employee::id).test()
                 .expectSubscription()
                 .expectNextCount(0)
                 .verifyComplete()

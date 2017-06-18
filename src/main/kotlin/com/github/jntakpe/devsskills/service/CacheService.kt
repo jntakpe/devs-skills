@@ -16,13 +16,13 @@ class CacheService(private val cacheManager: RedisCacheManager) {
 
     fun <T : Identifiable> store(value: T, property: KProperty1<T, *>, key: String? = null): T {
         logger.info("Storing {} in cache with key {}", value.toString(), key ?: value.id)
-        resolveCacheName(value.javaClass, property).putIfAbsent(key ?: value.id.toString(), value)
+        resolveCache(value.javaClass, property).put(key ?: value.id.toString(), value)
         return value
     }
 
-    fun <T : Identifiable> retrieve(key: String, property: KProperty1<T, *>, type: Class<T>): Mono<T> {
+    fun <T : Identifiable> retrieve(key: String, type: Class<T>, property: KProperty1<T, *>): Mono<T> {
         logger.debug("Retrieving cached key with ${property.name} and key : $key")
-        val cache = resolveCacheName(type, property)
+        val cache = resolveCache(type, property)
         return (cache.get(key, type)?.toMono() ?: cacheMiss(cache, key))
                 .doOnNext { logger.debug("{} retrieved from cache {} with key {}", it, cache.name, key) }
     }
@@ -32,7 +32,7 @@ class CacheService(private val cacheManager: RedisCacheManager) {
         return Mono.empty()
     }
 
-    private fun <T : Identifiable> resolveCacheName(clazz: Class<T>, property: KProperty1<T, *>): Cache {
+    private fun <T : Identifiable> resolveCache(clazz: Class<T>, property: KProperty1<T, *>): Cache {
         val cacheName = "${clazz.simpleName.toLowerCase()}_${property.name}"
         return cacheManager.getCache(cacheName) ?: throw IllegalStateException("Cache $cacheName not configured")
     }

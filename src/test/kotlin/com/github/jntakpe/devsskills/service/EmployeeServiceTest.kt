@@ -12,6 +12,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.redis.cache.RedisCacheManager
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.test.context.junit4.SpringRunner
 import reactor.core.publisher.Flux
@@ -26,6 +27,7 @@ class EmployeeServiceTest {
     @Autowired lateinit var employeeRepository: EmployeeRepository
     @Autowired lateinit var employeeService: EmployeeService
     @Autowired lateinit var redisConnectionFactory: RedisConnectionFactory
+    @Autowired lateinit var cacheManager: RedisCacheManager
     val jntakpe = Employee("jntakpe", "jntakpe@mail.com", "Jocelyn", "NTAKPE", setOf(Skill(BACKEND, "Java"), Skill(FRONTEND, "Angular")))
     val cbarillet = Employee("cbarillet", "cbarillet@mail.com", "Cyril", "BARILLET", setOf(Skill(OPS, "Docker")))
 
@@ -49,7 +51,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    fun `should find employee by id 100 times below 1 sec`() {
+    fun `should find employee by id 100 times below 2 secs`() {
         val execs = 100
         val duration = Flux.range(0, execs)
                 .publishOn(Schedulers.elastic())
@@ -57,7 +59,7 @@ class EmployeeServiceTest {
                 .expectSubscription()
                 .expectNextCount(execs.toLong())
                 .verifyComplete()
-        assertThat(duration).isLessThan(Duration.ofSeconds(1))
+        assertThat(duration).isLessThan(Duration.ofSeconds(2))
     }
 
     @Test
@@ -141,6 +143,20 @@ class EmployeeServiceTest {
         employeeService.update(jntakpe, ObjectId()).test()
                 .expectSubscription()
                 .verifyError(IdNotFoundException::class.java)
+    }
+
+    @Test
+    fun `should update cache when updating employee`() {
+        val updated = jntakpe.copy(login = "cached")
+        employeeService.update(updated, jntakpe.id!!).test()
+                .expectSubscription()
+                .consumeNextWith {
+                    assertThat(it).isNotNull()
+                    val cached = cacheManager.getCache("employee_id").get(jntakpe.id.toString(), Employee::class.java)
+                    assertThat(cached).isNotNull()
+                    assertThat(cached.login).isEqualTo(updated.login)
+                }
+                .verifyComplete()
     }
 
 }

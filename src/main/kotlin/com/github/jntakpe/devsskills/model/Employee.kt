@@ -2,12 +2,13 @@ package com.github.jntakpe.devsskills.model
 
 import com.github.jntakpe.devsskills.config.NoArg
 import org.bson.types.ObjectId
+import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 
 @NoArg
 @Document
-data class Employee(val login: String,
-                    val email: String,
+data class Employee(@field:Indexed val login: String,
+                    @field:Indexed val email: String,
                     val firstName: String,
                     val lastName: String,
                     val skills: Set<Skill> = emptySet(),
