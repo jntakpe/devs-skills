@@ -8,6 +8,7 @@
     <logger name="io.lettuce" level="WARN"/>
     <logger name="reactor" level="WARN"/>
     <logger name="org.mongodb" level="WARN"/>
+    <logger name="org.apache.http" level="WARN"/>
     <logger name="org.jboss.logging" level="WARN"/>
     <logger name="org.hibernate.validator" level="WARN"/>
     <logger name="org.springframework" level="WARN"/>
