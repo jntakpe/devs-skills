@@ -77,17 +77,10 @@ Every response has the following header(s):
 [[overview-errors]]
 == Errors
 
-Whenever an error response (status code >= 400) is returned, the body will contain a JSON object
-that describes the problem. The error object has the following structure:
-
-//include::{snippets}/some_endpoint/response-fields.adoc[]
-
-For example, a request that attempts to check accreditation for a TPP that is not accredited will receive a `401 Unauthorized` response:
-
-//include::{snippets}/some_endpoint/http-response.adoc[]
-
 [[resources]]
 = Resources
 
-[[some endpoint]]
-== Some endpoint
+[[Employees]]
+== Employees
+
+include::employees/findByLogin.adoc[]

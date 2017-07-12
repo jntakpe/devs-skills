@@ -17,7 +17,15 @@ import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.restdocs.JUnitRestDocumentation
+import org.springframework.restdocs.operation.preprocess.Preprocessors.*
+import org.springframework.restdocs.payload.JsonFieldType.STRING
+import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
+import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
+import org.springframework.restdocs.request.RequestDocumentation.parameterWithName
+import org.springframework.restdocs.request.RequestDocumentation.pathParameters
+import org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document
 import org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.documentationConfiguration
+import org.springframework.restdocs.restassured3.operation.preprocess.RestAssuredPreprocessors.modifyUris
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
@@ -41,6 +49,11 @@ class EmployeeHandlerTest {
     fun `should find employee using login`() {
         RestAssured.given(spec)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
+                .filter(document("employees_findByLogin",
+                        preprocessRequest(modifyUris().port(8080)),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(parameterWithName("login").description("The employee login")),
+                        responseFields(employeeDTOFields())))
                 .`when`().get("$baseUrl/login/{login}", employeeDAO.jntakpe.login)
                 .then().statusCode(HttpStatus.OK.value()).apply(validateEmployee(employeeDAO.jntakpe))
     }
@@ -62,5 +75,13 @@ class EmployeeHandlerTest {
             body("lastName", CoreMatchers.equalTo(employee.lastName))
         }
     }
+
+    private fun employeeDTOFields() = mutableListOf(
+            fieldWithPath("id").type(STRING).description("Auto generated identifier"),
+            fieldWithPath("login").type(STRING).description("Corporate username"),
+            fieldWithPath("email").type(STRING).description("Corporate mail address"),
+            fieldWithPath("firstName").type(STRING).description("First name"),
+            fieldWithPath("lastName").type(STRING).description("Last name")
+    )
 
 }

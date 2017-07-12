@@ -1,0 +1,25 @@
+[[find-by-login]]
+=== Finding employee by login
+
+ A `GET` request with no parameters will return a detailed view of the employee
+
+==== Path parameters
+
+include::{snippets}/employees_findByLogin/path-parameters.adoc[]
+
+==== Example request
+
+include::{snippets}/employees_findByLogin/curl-request.adoc[]
+
+or
+
+include::{snippets}/employees_findByLogin/http-request.adoc[]
+
+==== Response structure
+
+include::{snippets}/employees_findByLogin/response-fields.adoc[]
+
+==== Example response
+
+include::{snippets}/employees_findByLogin/http-response.adoc[]
+

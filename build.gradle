@@ -85,6 +85,7 @@ noArg {
 asciidoctor {
     dependsOn test
     inputs.dir snippetsDir
+    attributes 'snippets': snippetsDir
     sources {
         include 'api-guide.adoc'
     }
