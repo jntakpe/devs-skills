@@ -17,10 +17,9 @@ fun Throwable.toResponse() = when (this) {
     else -> INTERNAL_SERVER_ERROR.toErrorDTO(this.message)
 }
 
-fun HttpStatus.toErrorDTO(errMsg: String?) = status(this).syncBody(ErrorDTO(errMsg, this.value(), this.reasonPhrase))
-
-fun <T> Validator.toMono(target: T) = validate(target).toFlux()
+fun <T> Validator.validateToMono(target: T) = validate(target).toFlux()
         .map { it.message }
         .collectList()
-        .doOnNext { print(it) }
         .flatMap { if (it.isEmpty()) Mono.just(target) else ValidationException(it.joinToString()).toMono<T>() }
+
+private fun HttpStatus.toErrorDTO(errMsg: String?) = status(this).syncBody(ErrorDTO(errMsg, this.value(), this.reasonPhrase))
