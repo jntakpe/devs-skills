@@ -9,4 +9,5 @@ enum class SkillCategory {
     IA,
     LANGUAGE,
     MISC
+
 }
