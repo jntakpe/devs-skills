@@ -77,6 +77,15 @@ Every response has the following header(s):
 [[overview-errors]]
 == Errors
 
+Whenever an error response (status code >= 400) is returned, the body will contain a JSON object that describes the problem.
+The error object has the following structure:
+
+include::{snippets}/employees_findByLogin_fail/http-response.adoc[]
+
+For example, a request that attempts to retrieve an employee using a login that does not exist will produce :
+
+include::{snippets}/employees_findByLogin_fail/response-body.adoc[]
+
 [[resources]]
 = Resources
 

@@ -44,6 +44,11 @@ class EmployeeHandlerTest : AbstractHandlerTest() {
     fun `should not find employee using login`() {
         RestAssured.given(spec)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
+                .filter(document("employees_findByLogin_fail",
+                        preprocessRequest(modifyUris().port(8080)),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(parameterWithName("login").description("The employee login")),
+                        responseFields(errorDTOFields())))
                 .`when`().get("$baseUrl/login/{login}", "unknown")
                 .then().statusCode(HttpStatus.BAD_REQUEST.value())
     }
