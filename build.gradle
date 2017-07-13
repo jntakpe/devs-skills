@@ -87,7 +87,7 @@ asciidoctor {
     inputs.dir snippetsDir
     attributes 'snippets': snippetsDir
     sources {
-        include 'api-guide.adoc'
+        include 'index.adoc'
     }
 }
 
@@ -95,7 +95,7 @@ asciidoctor.doLast {
     copy {
         from "${buildDir}/asciidoc/html5"
         into "${projectDir}/src/main/resources/static"
-        include 'api-guide.html'
+        include 'index.html'
     }
 }
 
