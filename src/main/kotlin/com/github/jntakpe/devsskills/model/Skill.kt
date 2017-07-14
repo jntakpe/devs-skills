@@ -3,6 +3,7 @@ package com.github.jntakpe.devsskills.model
 import com.github.jntakpe.devsskills.config.NoArg
 import java.io.Serializable
 import java.math.BigDecimal
+import java.util.*
 
 @NoArg
 data class Skill(val category: SkillCategory,
@@ -13,11 +14,11 @@ data class Skill(val category: SkillCategory,
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Skill) return false
-        return name.toLowerCase() == other.name.toLowerCase()
+        return Objects.equals(category, other.category) && Objects.equals(name, other.name)
     }
 
     override fun hashCode(): Int {
-        return name.toLowerCase().hashCode()
+        return Objects.hash(category, name)
     }
 
     override fun toString(): String {

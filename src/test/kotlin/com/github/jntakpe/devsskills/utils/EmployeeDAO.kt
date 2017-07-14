@@ -22,4 +22,6 @@ class EmployeeDAO(private val employeeRepository: EmployeeRepository, private va
                 .blockLast()
     }
 
+    fun findAny() = employeeRepository.findAll().blockFirst() ?: throw IllegalStateException("No employee")
+
 }

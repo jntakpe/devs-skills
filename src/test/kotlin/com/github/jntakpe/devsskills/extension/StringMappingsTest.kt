@@ -14,10 +14,4 @@ class StringMappingsTest {
         assertThat(id).isEqualTo(objectId)
     }
 
-    @Test
-    fun `should map null string to null objectId`() {
-        val nullId = null
-        assertThat(nullId.toId()).isNull()
-    }
-
 }

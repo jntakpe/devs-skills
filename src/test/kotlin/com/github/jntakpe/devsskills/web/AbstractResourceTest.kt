@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.restdocs.JUnitRestDocumentation
 import org.springframework.restdocs.payload.JsonFieldType
-import org.springframework.restdocs.payload.PayloadDocumentation
+import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
 import org.springframework.restdocs.restassured3.RestAssuredRestDocumentation
 import org.springframework.test.context.junit4.SpringRunner
 
@@ -32,7 +32,7 @@ abstract class AbstractResourceTest {
     }
 
     protected fun errorDTOFields() = mutableListOf(
-            PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("Error message").optional(),
-            PayloadDocumentation.fieldWithPath("reason").type(JsonFieldType.STRING).description("HTTP status reason phrase")
+            fieldWithPath("message").type(JsonFieldType.STRING).description("Error message").optional(),
+            fieldWithPath("reason").type(JsonFieldType.STRING).description("HTTP status reason phrase")
     )
 }
