@@ -1,4 +1,4 @@
-[[find-by-login]]
+[[employee-find-by-login]]
 === Finding employee by login
 
  A `GET` request with no parameters will return a detailed view of the employee

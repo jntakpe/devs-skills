@@ -1,0 +1,29 @@
+[[skills-add]]
+=== Add skill
+
+ A `POST` request containing within its body the skill to add will return a detailed view of the employee
+
+==== Path parameters
+
+include::{snippets}/skills_add/path-parameters.adoc[]
+
+==== Request structure
+
+include::{snippets}/skills_add/request-fields.adoc[]
+
+==== Example request
+
+include::{snippets}/skills_add/curl-request.adoc[]
+
+or
+
+include::{snippets}/skills_add/http-request.adoc[]
+
+==== Response structure
+
+include::{snippets}/skills_add/response-fields.adoc[]
+
+==== Example response
+
+include::{snippets}/skills_add/http-response.adoc[]
+

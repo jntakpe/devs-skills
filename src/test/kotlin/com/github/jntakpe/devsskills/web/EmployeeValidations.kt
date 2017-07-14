@@ -39,10 +39,12 @@ fun employeeDetailDTOFields() = employeeDTOFields().apply {
     addAll(applyPathPrefix("skills[].", skillDTOFields()))
 }
 
-fun skillDTOFields() = mutableListOf(
+fun simpleSkillDTOFields() = mutableListOf(
         fieldWithPath("category").type(STRING)
                 .description("Skill category. Accepted values : ${SkillCategory.values().joinToString(",")}"),
-        fieldWithPath("name").type(STRING).description("Skill name"),
-        fieldWithPath("votes").type(ARRAY).description("List of votes"),
-        fieldWithPath("mean").type(NUMBER).description("Votes mean")
-)
+        fieldWithPath("name").type(STRING).description("Skill name"))
+
+fun skillDTOFields() = simpleSkillDTOFields().apply {
+    add(fieldWithPath("votes").type(ARRAY).description("List of votes"))
+    add(fieldWithPath("mean").type(NUMBER).description("Votes mean"))
+}
