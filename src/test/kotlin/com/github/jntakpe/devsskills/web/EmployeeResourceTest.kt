@@ -18,7 +18,7 @@ import org.springframework.restdocs.request.RequestDocumentation.pathParameters
 import org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.document
 import org.springframework.restdocs.restassured3.operation.preprocess.RestAssuredPreprocessors.modifyUris
 
-class EmployeeHandlerTest : AbstractHandlerTest() {
+class EmployeeResourceTest : AbstractResourceTest() {
 
     val baseUrl = "/api/employees"
     @Autowired lateinit var employeeDAO: EmployeeDAO

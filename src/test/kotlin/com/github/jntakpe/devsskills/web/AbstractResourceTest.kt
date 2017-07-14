@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-abstract class AbstractHandlerTest {
+abstract class AbstractResourceTest {
 
     protected lateinit var spec: RequestSpecification
     @Rule @JvmField val restDocumentation = JUnitRestDocumentation()
@@ -33,7 +33,6 @@ abstract class AbstractHandlerTest {
 
     protected fun errorDTOFields() = mutableListOf(
             PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING).description("Error message").optional(),
-            PayloadDocumentation.fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP status"),
-            PayloadDocumentation.fieldWithPath("reason").type(JsonFieldType.STRING).description("Initial error cause")
+            PayloadDocumentation.fieldWithPath("reason").type(JsonFieldType.STRING).description("HTTP status reason phrase")
     )
 }
