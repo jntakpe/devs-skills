@@ -1,6 +1,6 @@
 package com.github.jntakpe.devsskills.model
 
-enum class Vote {
+enum class Level {
 
     BEGINNER,
     INTERMEDIATE,

@@ -45,6 +45,12 @@ fun simpleSkillDTOFields() = mutableListOf(
         fieldWithPath("name").type(STRING).description("Skill name"))
 
 fun skillDTOFields() = simpleSkillDTOFields().apply {
-    add(fieldWithPath("votes").type(ARRAY).description("List of votes"))
-    add(fieldWithPath("mean").type(NUMBER).description("Votes mean"))
+    add(fieldWithPath("ratings").type(ARRAY).description("Skill ratings").optional())
+    addAll(applyPathPrefix("ratings[].", ratingDTOFields()))
+    add(fieldWithPath("mean").type(NUMBER).description("Votes mean").optional())
 }
+
+fun ratingDTOFields() = mutableListOf(
+        fieldWithPath("level").type(STRING).description("Skill level").optional(),
+        fieldWithPath("accessor").type(STRING).description("Login of the user owning the rating").optional()
+)

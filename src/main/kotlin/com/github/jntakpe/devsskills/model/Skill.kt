@@ -8,7 +8,7 @@ import java.util.*
 @NoArg
 data class Skill(val category: SkillCategory,
                  val name: String,
-                 val votes: List<Vote> = emptyList(),
+                 val ratings: List<Rating> = emptyList(),
                  val mean: BigDecimal = BigDecimal.ZERO) : Serializable {
 
     override fun equals(other: Any?): Boolean {

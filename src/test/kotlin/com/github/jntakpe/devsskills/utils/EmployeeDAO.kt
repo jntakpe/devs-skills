@@ -1,8 +1,6 @@
 package com.github.jntakpe.devsskills.utils
 
-import com.github.jntakpe.devsskills.model.Employee
-import com.github.jntakpe.devsskills.model.Skill
-import com.github.jntakpe.devsskills.model.SkillCategory
+import com.github.jntakpe.devsskills.model.*
 import com.github.jntakpe.devsskills.repository.EmployeeRepository
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.stereotype.Repository
@@ -11,9 +9,10 @@ import org.springframework.stereotype.Repository
 class EmployeeDAO(private val employeeRepository: EmployeeRepository, private val redisConnectionFactory: RedisConnectionFactory) {
 
     val jntakpe = Employee("jntakpe", "jntakpe@mail.com", "Jocelyn", "NTAKPE",
-            setOf(Skill(SkillCategory.BACKEND, "Java"), Skill(SkillCategory.FRONTEND, "Angular")))
+            setOf(Skill(SkillCategory.BACKEND, "Java", listOf(Rating(Level.EXPERT, "cbarillet"))),
+                    Skill(SkillCategory.FRONTEND, "Angular", listOf(Rating(Level.ADVANCED, "cbarillet")))))
     val cbarillet = Employee("cbarillet", "cbarillet@mail.com", "Cyril", "BARILLET",
-            setOf(Skill(SkillCategory.OPS, "Docker")))
+            setOf(Skill(SkillCategory.OPS, "Docker", listOf(Rating(Level.ADVANCED, "jntakpe")))))
 
     fun initDB() {
         redisConnectionFactory.connection.flushDb()
