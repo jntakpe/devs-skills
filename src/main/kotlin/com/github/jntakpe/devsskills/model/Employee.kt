@@ -25,7 +25,8 @@ data class Employee(@field:Indexed val login: String,
     }
 
     override fun toString(): String {
-        return "Employee (login:$login, email=$email, firstName=$firstName, lastName=$lastName)"
+        return "Employee(login='$login', email='$email', firstName='$firstName', lastName='$lastName')"
     }
+
 
 }

@@ -16,4 +16,5 @@ class SkillResource(private val skillService: SkillService) {
     fun addSkill(@PathVariable id: String, @RequestBody @Valid skill: SkillDTO) = skillService.addSkill(id.toId(), skill.toEntity())
             .map { it.toDetailDTO() }
 
+
 }

@@ -46,6 +46,18 @@ class SkillServiceTest {
     }
 
     @Test
+    fun `should add skill and generate identifier`() {
+        val mongo = Skill(DATABASE, "MongoDB")
+        skillService.addSkill(jntakpe.id!!, mongo).test()
+                .expectSubscription()
+                .consumeNextWith {
+                    println(it.skills.firstOrNull()?.id)
+                    assertThat(it.skills.firstOrNull()?.id).isNotNull()
+                }
+                .verifyComplete()
+    }
+
+    @Test
     fun `should add skill to empty skill list`() {
         skillService.addSkill(noskill.id!!, Skill(OPS, "Chef")).test()
                 .expectSubscription()

@@ -1,7 +1,7 @@
 package com.github.jntakpe.devsskills.model
 
 import com.github.jntakpe.devsskills.config.NoArg
-import java.io.Serializable
+import org.bson.types.ObjectId
 import java.math.BigDecimal
 import java.util.*
 
@@ -9,7 +9,8 @@ import java.util.*
 data class Skill(val category: SkillCategory,
                  val name: String,
                  val ratings: List<Rating> = emptyList(),
-                 val mean: BigDecimal = BigDecimal.ZERO) : Serializable {
+                 val mean: BigDecimal = BigDecimal.ZERO,
+                 override val id: ObjectId = ObjectId()) : Identifiable {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -22,6 +23,6 @@ data class Skill(val category: SkillCategory,
     }
 
     override fun toString(): String {
-        return super.toString()
+        return "Skill(category=$category, name='$name', mean=$mean)"
     }
 }
