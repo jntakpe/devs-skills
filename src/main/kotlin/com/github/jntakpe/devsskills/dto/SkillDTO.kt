@@ -8,4 +8,5 @@ import java.math.BigDecimal.ZERO
 data class SkillDTO(val category: SkillCategory,
                     @field:NotBlank val name: String,
                     val ratings: List<RatingDTO> = emptyList(),
-                    val mean: BigDecimal = ZERO)
+                    val mean: BigDecimal = ZERO,
+                    val id: String? = null)
